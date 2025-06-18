@@ -1,4 +1,5 @@
 'use client'
+import { ArrowDown01, ArrowDownAZ, ArrowUp01, ArrowUpAZ, ArrowUpDown, MoveDown, MoveUp } from 'lucide-react';
 import React, { useState } from 'react'
 
 interface MemberType {
@@ -12,14 +13,20 @@ const MembersList: MemberType[] = [
   {
     avatar: 'https://via.placeholder.com/40',
     username: 'eeshal',
-    joinDate: '2025-06-19',
+    joinDate: '2025-06-20',
     role: 'member',
   },
   {
     avatar: 'https://via.placeholder.com/41',
     username: 'sai',
-    joinDate: '2025-06-20',
+    joinDate: '2025-06-19',
     role: 'admin',
+  },
+  {
+    avatar: 'https://via.placeholder.com/41',
+    username: 'alex',
+    joinDate: '2025-06-21',
+    role: 'moderator',
   },
 ]
 
@@ -28,12 +35,15 @@ const uniqueRoles = Array.from(new Set(MembersList.map((m) => m.role)))
 
 
 const MembersPage = () => {
-  const [members, setMembers] = useState<MemberType[]>(MembersList)
   const [filterUsernameValue, setFilterUsernameValue] = useState<string>('');
   const [filterRoleValue, setFilterRoleValue] = useState<string>('');
   const [filterJoiningDateValue, setFilterJoiningDateValue] = useState<string>('');
 
-  const filteredMembers = members.filter((member) => 
+  const [sortingOrder, setSortingOrder] = useState<'ascending' | 'descending' | ''>('');
+  const [sortingColumn, setSortingColumn] = useState<'username' | 'joinDate' | ''>('')
+
+
+  const filteredMembers = MembersList.filter((member) => 
   {
     const matchedUsernameMembers = member.username.toLowerCase().includes(filterUsernameValue?.toLocaleLowerCase());
 
@@ -43,6 +53,41 @@ const MembersPage = () => {
 
     return matchedUsernameMembers && matchedRoleMembers && matchedJoingDateMembers;
   });
+  
+   const sortedMembers = [...filteredMembers]?.sort((a, b) => {
+
+    if(sortingColumn == 'username') {
+      if(sortingOrder === 'ascending') 
+      {
+        return a.username?.localeCompare(b.username);
+
+      }else if(sortingOrder === 'descending'){
+
+        return b.username.localeCompare(a.username);
+
+      }else{
+
+        return 0;
+
+      }
+    }else if(sortingColumn === 'joinDate'){
+          if(sortingOrder === 'ascending') 
+      {
+        return new Date(a.joinDate).getTime() - new Date(b.joinDate).getTime();
+
+      }else if(sortingOrder === 'descending'){
+
+        return new Date(b.joinDate).getTime() - new Date(a.joinDate).getTime();
+
+      }else{
+
+        return 0;
+
+      }
+    }else{
+        return 0
+      }
+  })
 
   return (
     <div className='flex flex-col gap-2 p-4'>
@@ -82,15 +127,50 @@ const MembersPage = () => {
       <table className='table-auto border-collapse border w-full'>
         <thead className=''>
           <tr>
-            {tableHeaders.map((header) => (
-              <th key={header} className='border px-4 py-2 text-left'>
-                {header}
-              </th>
-            ))}
+            {tableHeaders.map((header) => {
+              const column = header === 'Username' ? 'username' :
+                            header === 'Join Date' ? 'joinDate' : '';
+
+              const isSortable = column !== '';
+
+              const icon = sortingColumn === column
+                ? sortingOrder === 'ascending'
+                  ? (column === 'username' ? <ArrowUpAZ /> : <MoveUp />)
+                  : sortingOrder === 'descending'
+                  ? (column === 'username' ? <ArrowDownAZ /> : <MoveDown />)
+                  : <ArrowUpDown />
+                : <ArrowUpDown />;
+
+  return (
+    <th
+      key={header}
+      onClick={() => {
+        if (!isSortable) return;
+
+        if (sortingColumn !== column) {
+          setSortingColumn(column as 'username' | 'joinDate');
+          setSortingOrder('ascending');
+        } else {
+          setSortingOrder(prev =>
+            prev === 'ascending' ? 'descending' :
+            prev === 'descending' ? '' : 'ascending'
+          );
+        }
+      }}
+      className='border px-4 py-2 text-left cursor-pointer select-none'
+    >
+      <div className='flex justify-between items-center'>
+        {header}
+        {isSortable && icon}
+      </div>
+    </th>
+  );
+})}
+
           </tr>
         </thead>
         <tbody>
-          {filteredMembers?.length > 0 && filteredMembers.map((member) => (
+          {sortedMembers?.length > 0 ? sortedMembers.map((member) => (
             <tr key={member.username}>
               <td className='border px-4 py-2'>
                 <img
@@ -103,7 +183,11 @@ const MembersPage = () => {
               <td className='border px-4 py-2'>{member.joinDate}</td>
               <td className='border px-4 py-2'>{member.role.charAt(0).toUpperCase() + member.role.slice(1)}</td>
             </tr>
-          ))}
+          )) :
+          <tr className='text-center'>
+            <td>No members found</td>
+          </tr>
+          }
         </tbody>
       </table>
     </div>
