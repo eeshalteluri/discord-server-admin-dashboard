@@ -1,21 +1,84 @@
-import React from 'react'
+'use client'
+import React, { useState } from 'react'
 
-const MembersList = [
+interface MemberType {
+  avatar: string,
+  username: string,
+  joinDate: string,
+  role: string
+}
+
+const MembersList: MemberType[] = [
   {
     avatar: 'https://via.placeholder.com/40',
     username: 'eeshal',
-    joinDate: '1-2-2025',
+    joinDate: '2025-06-19',
     role: 'member',
+  },
+  {
+    avatar: 'https://via.placeholder.com/41',
+    username: 'sai',
+    joinDate: '2025-06-20',
+    role: 'admin',
   },
 ]
 
-// Define dynamic table headers
-const tableHeaders = ['Avatar', 'Username', 'Join Date', 'Role']
+const tableHeaders = ['Avatar', 'Username', 'Join Date', 'Role'];
+const uniqueRoles = Array.from(new Set(MembersList.map((m) => m.role)))
 
 
 const MembersPage = () => {
+  const [members, setMembers] = useState<MemberType[]>(MembersList)
+  const [filterUsernameValue, setFilterUsernameValue] = useState<string>('');
+  const [filterRoleValue, setFilterRoleValue] = useState<string>('');
+  const [filterJoiningDateValue, setFilterJoiningDateValue] = useState<string>('');
+
+  const filteredMembers = members.filter((member) => 
+  {
+    const matchedUsernameMembers = member.username.toLowerCase().includes(filterUsernameValue?.toLocaleLowerCase());
+
+    const matchedRoleMembers = member.role.includes(filterRoleValue);
+
+    const matchedJoingDateMembers = member.joinDate.includes(filterJoiningDateValue);
+
+    return matchedUsernameMembers && matchedRoleMembers && matchedJoingDateMembers;
+  });
+
   return (
-    <div className='p-4'>
+    <div className='flex flex-col gap-2 p-4'>
+      <div className='flex gap-2'>
+
+        {/*Filter by username*/}
+        <input
+        name='usernameFilter'
+        type="text" 
+        className='border-secondary border-1 rounded-md'
+        onChange={(event) => setFilterUsernameValue(event.target.value)}/>
+
+        {/*Filter by role*/}
+        <select 
+          name="roleFilter" 
+          id="roleFilter"
+          className='border-secondary border-1 rounded-md'
+          onChange={(event) => setFilterRoleValue(event.target.value)}
+        >
+          <option value="">All Roles</option>
+          {uniqueRoles?.length > 0 && uniqueRoles.map((role) => (
+            <option key={role} value={role}>{role.charAt(0).toUpperCase() + role.slice(1) }</option>
+          ))}
+        </select>
+
+        {/*Filter by joining date*/}
+        <input
+          name='filterJoiningDate'
+          type="date"
+          className='border-secondary border-1 rounded-md'
+          onChange={(event) => {
+            console.log(event.target.value);
+            setFilterJoiningDateValue(event.target.value)
+          }} />
+      </div>
+
       <table className='table-auto border-collapse border w-full'>
         <thead className=''>
           <tr>
@@ -27,8 +90,8 @@ const MembersPage = () => {
           </tr>
         </thead>
         <tbody>
-          {MembersList.map((member) => (
-            <tr key={member.username} className='hover:bg-gray-50'>
+          {filteredMembers?.length > 0 && filteredMembers.map((member) => (
+            <tr key={member.username}>
               <td className='border px-4 py-2'>
                 <img
                   src={member.avatar}
@@ -38,7 +101,7 @@ const MembersPage = () => {
               </td>
               <td className='border px-4 py-2'>{member.username}</td>
               <td className='border px-4 py-2'>{member.joinDate}</td>
-              <td className='border px-4 py-2'>{member.role}</td>
+              <td className='border px-4 py-2'>{member.role.charAt(0).toUpperCase() + member.role.slice(1)}</td>
             </tr>
           ))}
         </tbody>
