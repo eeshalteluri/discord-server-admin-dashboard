@@ -1,46 +1,16 @@
 'use client'
-import { ArrowDown01, ArrowDownAZ, ArrowUp01, ArrowUpAZ, ArrowUpDown, MoveDown, MoveUp } from 'lucide-react';
+import { ArrowDownAZ, ArrowUpAZ, ArrowUpDown, MoveDown, MoveUp } from 'lucide-react';
 import React, { useState } from 'react'
-
-interface MemberType {
-  avatar: string,
-  username: string,
-  joinDate: string,
-  role: string
-}
-
-const MembersList: MemberType[] = [
-  {
-    avatar: 'https://via.placeholder.com/40',
-    username: 'eeshal',
-    joinDate: '2025-06-20',
-    role: 'member',
-  },
-  {
-    avatar: 'https://via.placeholder.com/41',
-    username: 'sai',
-    joinDate: '2025-06-19',
-    role: 'admin',
-  },
-  {
-    avatar: 'https://via.placeholder.com/42',
-    username: 'alex',
-    joinDate: '2025-06-21',
-    role: 'moderator',
-  },
-  {
-    avatar: 'https://via.placeholder.com/43',
-    username: 'teluri',
-    joinDate: '2025-06-17',
-    role: 'member',
-  },
-]
+import { MembersList } from '../constants/constants';
+import { useAddMemberModal } from '../contexts/addMemberModalContext';
+import AddMemberModal from '../components/Modals/AddMemberModal';
 
 const tableHeaders = ['Avatar', 'Username', 'Join Date', 'Role'];
 const uniqueRoles = Array.from(new Set(MembersList.map((m) => m.role)))
 
 
 const MembersPage = () => {
+  const { isOpen, onOpen, onClose } = useAddMemberModal();
   const [filterUsernameValue, setFilterUsernameValue] = useState<string>('');
   const [filterRoleValue, setFilterRoleValue] = useState<string>('');
   const [filterJoiningDateValue, setFilterJoiningDateValue] = useState<string>('');
@@ -106,20 +76,21 @@ const MembersPage = () => {
 
   return (
     <div className='flex flex-col gap-2 p-4'>
-      <div className='flex justify-center gap-2'>
+      <div className='flex justify-between items-center'>
+        <div className='flex justify-center gap-2'>
 
         {/*Filter by username*/}
         <input
         name='usernameFilter'
         type="text" 
-        className='border-secondary border-1 rounded-md'
+        className='border-secondary border-1 p-1 rounded-md'
         onChange={(event) => setFilterUsernameValue(event.target.value)}/>
 
         {/*Filter by role*/}
         <select 
           name="roleFilter" 
           id="roleFilter"
-          className='border-secondary border-1 rounded-md'
+          className='border-secondary border-1 p-1 rounded-md'
           onChange={(event) => setFilterRoleValue(event.target.value)}
         >
           <option value="">All Roles</option>
@@ -137,7 +108,16 @@ const MembersPage = () => {
             console.log(event.target.value);
             setFilterJoiningDateValue(event.target.value)
           }} />
+        </div>
+
+        <button
+          onClick={() => onOpen()}
+          className='border-1 p-1 rounded-md hover:opacity-70 cursor-pointer'
+        >Add Member</button>
       </div>
+      {isOpen && 
+        <AddMemberModal />
+      }
 
       <table className='table-auto border-collapse border w-full'>
         <thead className=''>
