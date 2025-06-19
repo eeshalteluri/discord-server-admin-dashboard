@@ -23,10 +23,16 @@ const MembersList: MemberType[] = [
     role: 'admin',
   },
   {
-    avatar: 'https://via.placeholder.com/41',
+    avatar: 'https://via.placeholder.com/42',
     username: 'alex',
     joinDate: '2025-06-21',
     role: 'moderator',
+  },
+  {
+    avatar: 'https://via.placeholder.com/43',
+    username: 'teluri',
+    joinDate: '2025-06-17',
+    role: 'member',
   },
 ]
 
@@ -40,8 +46,7 @@ const MembersPage = () => {
   const [filterJoiningDateValue, setFilterJoiningDateValue] = useState<string>('');
 
   const [sortingOrder, setSortingOrder] = useState<'ascending' | 'descending' | ''>('');
-  const [sortingColumn, setSortingColumn] = useState<'username' | 'joinDate' | ''>('')
-
+  const [sortingColumn, setSortingColumn] = useState<'username' | 'joinDate' | ''>('');
 
   const filteredMembers = MembersList.filter((member) => 
   {
@@ -89,9 +94,19 @@ const MembersPage = () => {
       }
   })
 
+  const [currentPage, setCurrentPage ] = useState<number>(1);
+  const membersPerPage = 2;
+
+  const startIndex = (currentPage - 1) * membersPerPage;
+  const endIndex = startIndex + membersPerPage;
+
+  const paginatedMembers = sortedMembers.slice(startIndex, endIndex);
+
+  const totalPages = Math.ceil(sortedMembers?.length/membersPerPage);
+
   return (
     <div className='flex flex-col gap-2 p-4'>
-      <div className='flex gap-2'>
+      <div className='flex justify-center gap-2'>
 
         {/*Filter by username*/}
         <input
@@ -170,7 +185,7 @@ const MembersPage = () => {
           </tr>
         </thead>
         <tbody>
-          {sortedMembers?.length > 0 ? sortedMembers.map((member) => (
+          {paginatedMembers?.length > 0 ? paginatedMembers.map((member) => (
             <tr key={member.username}>
               <td className='border px-4 py-2'>
                 <img
@@ -190,6 +205,34 @@ const MembersPage = () => {
           }
         </tbody>
       </table>
+
+      <div className='flex justify-center gap-2'>
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev-1, 1))}
+          disabled={currentPage === 1}
+          className='p-2 border-1 border-secondary rounded-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-80'
+        >
+          Previous
+        </button>
+
+        {totalPages > 0 && Array.from({length: totalPages}, (_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentPage((prev) => index+1)}
+            className={`p-2 border-1 border-secondary rounded-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-80 ${currentPage === index + 1 ? 'bg-gray-200' : ''}`}
+          >
+            {index + 1}
+          </button>
+        )) }
+
+        <button
+          onClick={() => setCurrentPage((prev) => Math.min(prev+1, totalPages))}
+          disabled={currentPage === totalPages}
+          className='p-2 border-1 border-secondary rounded-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-80'
+        >
+          Next
+        </button>
+      </div>
     </div>
   )
 }
