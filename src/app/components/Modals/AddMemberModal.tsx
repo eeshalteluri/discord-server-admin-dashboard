@@ -6,9 +6,11 @@ import Modal from '../Modal';
 import ImageUpload from '../ImageUpload';
 import Input from '../Input';
 import { RolesList } from '@/app/constants/constants';
+import { useMembers } from '@/app/contexts/MembersContext';
 
 const AddMemberModal = () => {
     const {isOpen, onClose} = useAddMemberModal();
+    const { setMembers } = useMembers();
 
     const [profileImage, setProfileImage] = useState('');
     const [role, setRole] = useState('');
@@ -29,12 +31,30 @@ const AddMemberModal = () => {
     const onSubmit = useCallback(async () => {
         try{
             setIsLoading(true);
+
+            const newMember = {
+              avatar: profileImage,
+              username,
+              joinDate: joiningDate,
+              role,
+              isOnline: false,
+            }
+
+            console.log("New Member: ", newMember);
+
+            setMembers((prev) => [...prev, newMember]);
+
             onClose();
             setIsLoading(false);
         }catch(error){
             console.log(error);
         }
     }, [
+        profileImage,
+        joiningDate,
+        role,
+        setMembers,
+        username,
         setIsLoading,
         onClose,
     ])

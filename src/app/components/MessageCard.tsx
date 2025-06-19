@@ -1,5 +1,6 @@
 import React from 'react';
 import { Trash2 as DeleteIcon } from 'lucide-react';
+import Image from 'next/image';
 
 interface MessageCardProps {
   avatar: string;
@@ -19,9 +20,11 @@ const MessageCard: React.FC<MessageCardProps> = ({
       {/* Header */}
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-3">
-          <img
+          <Image
             src={avatar}
             alt={`${username}'s avatar`}
+            width={10}
+            height={10}
             className="w-10 h-10 rounded-full object-cover"
           />
           <div>

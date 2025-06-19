@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { useAddMemberModal } from '../contexts/addMemberModalContext';
 import AddMemberModal from '../components/Modals/AddMemberModal';
 import { useMembers } from '../contexts/MembersContext';
+import Image from 'next/image';
 
 const MembersPage = () => {
   const { members } = useMembers()
@@ -115,7 +116,7 @@ const MembersPage = () => {
           className='border-1 p-1 rounded-md hover:opacity-70 cursor-pointer'
         >Add Member</button>
       </div>
-      
+
       {isOpen && 
         <AddMemberModal />
       }
@@ -169,9 +170,11 @@ const MembersPage = () => {
           {paginatedMembers?.length > 0 ? paginatedMembers.map((member) => (
             <tr key={member.username}>
               <td className='border px-4 py-2'>
-                <img
+                <Image
                   src={member.avatar}
                   alt='avatar'
+                  width={8}
+                  height={8}
                   className='w-8 h-8 rounded-full'
                 />
               </td>
@@ -199,7 +202,7 @@ const MembersPage = () => {
         {totalPages > 0 && Array.from({length: totalPages}, (_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentPage((prev) => index+1)}
+            onClick={() => setCurrentPage(index+1)}
             className={`p-2 border-1 border-secondary rounded-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-80 ${currentPage === index + 1 ? 'bg-gray-200' : ''}`}
           >
             {index + 1}
