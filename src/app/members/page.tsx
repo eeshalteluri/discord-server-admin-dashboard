@@ -1,16 +1,13 @@
 'use client'
 import { ArrowDownAZ, ArrowUpAZ, ArrowUpDown, MoveDown, MoveUp } from 'lucide-react';
 import React, { useState } from 'react'
-import { MembersList } from '../constants/constants';
 import { useAddMemberModal } from '../contexts/addMemberModalContext';
 import AddMemberModal from '../components/Modals/AddMemberModal';
-
-const tableHeaders = ['Avatar', 'Username', 'Join Date', 'Role'];
-const uniqueRoles = Array.from(new Set(MembersList.map((m) => m.role)))
-
+import { useMembers } from '../contexts/MembersContext';
 
 const MembersPage = () => {
-  const { isOpen, onOpen, onClose } = useAddMemberModal();
+  const { members } = useMembers()
+  const { isOpen, onOpen } = useAddMemberModal();
   const [filterUsernameValue, setFilterUsernameValue] = useState<string>('');
   const [filterRoleValue, setFilterRoleValue] = useState<string>('');
   const [filterJoiningDateValue, setFilterJoiningDateValue] = useState<string>('');
@@ -18,7 +15,10 @@ const MembersPage = () => {
   const [sortingOrder, setSortingOrder] = useState<'ascending' | 'descending' | ''>('');
   const [sortingColumn, setSortingColumn] = useState<'username' | 'joinDate' | ''>('');
 
-  const filteredMembers = MembersList.filter((member) => 
+  const tableHeaders = ['Avatar', 'Username', 'Join Date', 'Role'];
+  const uniqueRoles = Array.from(new Set(members.map((m) => m.role)))
+
+  const filteredMembers = members.filter((member) => 
   {
     const matchedUsernameMembers = member.username.toLowerCase().includes(filterUsernameValue?.toLocaleLowerCase());
 
@@ -61,7 +61,7 @@ const MembersPage = () => {
       }
     }else{
         return 0
-      }
+    }
   })
 
   const [currentPage, setCurrentPage ] = useState<number>(1);
@@ -115,6 +115,7 @@ const MembersPage = () => {
           className='border-1 p-1 rounded-md hover:opacity-70 cursor-pointer'
         >Add Member</button>
       </div>
+      
       {isOpen && 
         <AddMemberModal />
       }

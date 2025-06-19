@@ -4,6 +4,9 @@ import "./globals.css";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Navbar from "./components/Navbar";
 import { AddMemberModalProvider } from "./contexts/addMemberModalContext";
+import { MembersProvider } from "./contexts/MembersContext";
+import { RolesProvider } from "./contexts/RolesContext";
+import { MessagesProvider } from "./contexts/MessagesContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,15 +33,21 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AddMemberModalProvider>
-        <div className="h-screen flex">
-          <Sidebar />
-          <div className="flex-1">
-            <Navbar />
-            {children}
-          </div>
-        </div>
-        </AddMemberModalProvider>
+        <MembersProvider>
+        <RolesProvider>
+          <MessagesProvider>
+            <AddMemberModalProvider>
+              <div className="h-screen flex">
+                <Sidebar />
+                <div className="flex-1">
+                  <Navbar />
+                  {children}
+                </div>
+              </div>
+            </AddMemberModalProvider>
+          </MessagesProvider>
+        </RolesProvider>
+        </MembersProvider>
       </body>
     </html>
   );

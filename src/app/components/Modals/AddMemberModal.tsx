@@ -69,8 +69,8 @@ const AddMemberModal = () => {
       </option>
       {RolesList.length > 0 &&
         RolesList.map((role) => (
-          <option key={role.role} value={role.role}>
-            {role.role.charAt(0).toUpperCase() + role.role.slice(1)}
+          <option key={role.name} value={role.name}>
+            {role.name.charAt(0).toUpperCase() + role.name.slice(1)}
           </option>
         ))}
     </select>
