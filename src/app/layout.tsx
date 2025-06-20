@@ -37,11 +37,15 @@ export default function RootLayout({
         <RolesProvider>
           <MessagesProvider>
             <AddMemberModalProvider>
-              <div className="h-screen flex">
+              <div className="flex h-screen w-full overflow-hidden">
                 <Sidebar />
-                <div className="flex-1">
+
+                <div className="flex flex-col flex-1 overflow-hidden">
                   <Navbar />
-                  {children}
+
+                  <main className="bg-[#1a1a1e] flex-1 overflow-y-auto bg-muted p-4">
+                    {children}
+                  </main>
                 </div>
               </div>
             </AddMemberModalProvider>

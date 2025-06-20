@@ -76,149 +76,159 @@ const MembersPage = () => {
   const totalPages = Math.ceil(sortedMembers?.length/membersPerPage);
 
   return (
-    <div className='flex flex-col gap-2 p-4'>
-      <div className='flex justify-between items-center'>
-        <div className='flex justify-center gap-2'>
+    <div className="flex flex-col gap-6 p-6 bg-white dark:bg-zinc-900 rounded-xl shadow-md">
+      {/* Filters and Button */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+          <input
+            name="usernameFilter"
+            type="text"
+            placeholder="Filter by username"
+            className="text-white border border-zinc-400 dark:border-zinc-700 bg-transparent px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            onChange={(e) => setFilterUsernameValue(e.target.value)}
+          />
 
-        {/*Filter by username*/}
-        <input
-        name='usernameFilter'
-        type="text" 
-        className='border-secondary border-1 p-1 rounded-md'
-        onChange={(event) => setFilterUsernameValue(event.target.value)}/>
+          <select
+            name="roleFilter"
+            className="text-white border border-zinc-400 dark:border-zinc-700 bg-transparent px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            onChange={(e) => setFilterRoleValue(e.target.value)}
+          >
+            <option value="" className='text-white bg-zinc-700'>All Roles</option>
+            {uniqueRoles.map((role) => (
+              <option key={role} value={role} className='text-white bg-zinc-700'>
+                {role.charAt(0).toUpperCase() + role.slice(1)}
+              </option>
+            ))}
+          </select>
 
-        {/*Filter by role*/}
-        <select 
-          name="roleFilter" 
-          id="roleFilter"
-          className='border-secondary border-1 p-1 rounded-md'
-          onChange={(event) => setFilterRoleValue(event.target.value)}
-        >
-          <option value="">All Roles</option>
-          {uniqueRoles?.length > 0 && uniqueRoles.map((role) => (
-            <option key={role} value={role}>{role.charAt(0).toUpperCase() + role.slice(1) }</option>
-          ))}
-        </select>
-
-        {/*Filter by joining date*/}
-        <input
-          name='filterJoiningDate'
-          type="date"
-          className='border-secondary border-1 rounded-md'
-          onChange={(event) => {
-            console.log(event.target.value);
-            setFilterJoiningDateValue(event.target.value)
-          }} />
+          <input
+            type="date"
+            name="filterJoiningDate"
+            className="text-white border border-zinc-400 dark:border-zinc-700 bg-transparent px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            onChange={(e) => setFilterJoiningDateValue(e.target.value)}
+          />
         </div>
 
         <button
-          onClick={() => onOpen()}
-          className='border-1 p-1 rounded-md hover:opacity-70 cursor-pointer'
-        >Add Member</button>
+          onClick={onOpen}
+          className="bg-primary text-white dark:bg-zinc-700 dark:text-white px-4 py-2 rounded-md hover:opacity-80 transition-colors"
+        >
+          Add Member
+        </button>
       </div>
 
-      {isOpen && 
-        <AddMemberModal />
-      }
+      {isOpen && <AddMemberModal />}
 
-      <table className='table-auto border-collapse border w-full'>
-        <thead className=''>
-          <tr>
-            {tableHeaders.map((header) => {
-              const column = header === 'Username' ? 'username' :
-                            header === 'Join Date' ? 'joinDate' : '';
+      {/* Table */}
+      <div className="overflow-x-auto rounded-lg border border-zinc-700">
+        <table className="min-w-full table-auto text-sm">
+          <thead className="bg-zinc-800 text-white">
+            <tr>
+              {tableHeaders.map((header) => {
+                const column = header === 'Username' ? 'username' : header === 'Join Date' ? 'joinDate' : '';
+                const isSortable = column !== '';
+                const icon =
+                  sortingColumn === column
+                    ? sortingOrder === 'ascending'
+                      ? column === 'username'
+                        ? <ArrowUpAZ />
+                        : <MoveUp />
+                      : sortingOrder === 'descending'
+                      ? column === 'username'
+                        ? <ArrowDownAZ />
+                        : <MoveDown />
+                      : <ArrowUpDown />
+                    : <ArrowUpDown />;
 
-              const isSortable = column !== '';
-
-              const icon = sortingColumn === column
-                ? sortingOrder === 'ascending'
-                  ? (column === 'username' ? <ArrowUpAZ /> : <MoveUp />)
-                  : sortingOrder === 'descending'
-                  ? (column === 'username' ? <ArrowDownAZ /> : <MoveDown />)
-                  : <ArrowUpDown />
-                : <ArrowUpDown />;
-
-  return (
-    <th
-      key={header}
-      onClick={() => {
-        if (!isSortable) return;
-
-        if (sortingColumn !== column) {
-          setSortingColumn(column as 'username' | 'joinDate');
-          setSortingOrder('ascending');
-        } else {
-          setSortingOrder(prev =>
-            prev === 'ascending' ? 'descending' :
-            prev === 'descending' ? '' : 'ascending'
-          );
-        }
-      }}
-      className='border px-4 py-2 text-left cursor-pointer select-none'
-    >
-      <div className='flex justify-between items-center'>
-        {header}
-        {isSortable && icon}
-      </div>
-    </th>
-  );
-})}
-
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedMembers?.length > 0 ? paginatedMembers.map((member) => (
-            <tr key={member.username}>
-              <td className='border px-4 py-2'>
-                <Image
-                  src={member.avatar}
-                  alt='avatar'
-                  width={8}
-                  height={8}
-                  className='w-8 h-8 rounded-full'
-                />
-              </td>
-              <td className='border px-4 py-2'>{member.username}</td>
-              <td className='border px-4 py-2'>{member.joinDate}</td>
-              <td className='border px-4 py-2'>{member.role.charAt(0).toUpperCase() + member.role.slice(1)}</td>
+                return (
+                  <th
+                    key={header}
+                    onClick={() => {
+                      if (!isSortable) return;
+                      if (sortingColumn !== column) {
+                        setSortingColumn(column as 'username' | 'joinDate');
+                        setSortingOrder('ascending');
+                      } else {
+                        setSortingOrder((prev) =>
+                          prev === 'ascending' ? 'descending' : prev === 'descending' ? '' : 'ascending'
+                        );
+                      }
+                    }}
+                    className="px-6 py-3 border-b border-zinc-700 text-left cursor-pointer select-none hover:bg-zinc-700 transition"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      {header}
+                      {isSortable && icon}
+                    </div>
+                  </th>
+                );
+              })}
             </tr>
-          )) :
-          <tr className='text-center'>
-            <td>No members found</td>
-          </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-zinc-700 bg-zinc-900 text-zinc-100">
+            {paginatedMembers.length > 0 ? (
+              paginatedMembers.map((member, index) => (
+                <tr
+                  key={member.username}
+                  className={index % 2 === 0 ? 'bg-zinc-900' : 'bg-zinc-800 hover:bg-zinc-700 transition'}
+                >
+                  <td className="px-6 py-4">
+                    <Image
+                      src={member.avatar}
+                      alt="avatar"
+                      width={32}
+                      height={32}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  </td>
+                  <td className="px-6 py-4">{member.username}</td>
+                  <td className="px-6 py-4">{member.joinDate}</td>
+                  <td className="px-6 py-4 capitalize">{member.role}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4} className="text-center py-6 text-zinc-400">
+                  No members found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
-      <div className='flex justify-center gap-2'>
+      {/* Pagination */}
+      <div className="flex justify-center flex-wrap gap-2 mt-4">
         <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev-1, 1))}
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className='p-2 border-1 border-secondary rounded-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-80'
+          className="text-white px-3 py-1 border border-zinc-500 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Previous
         </button>
 
-        {totalPages > 0 && Array.from({length: totalPages}, (_, index) => (
+        {Array.from({ length: totalPages }, (_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentPage(index+1)}
-            className={`p-2 border-1 border-secondary rounded-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-80 ${currentPage === index + 1 ? 'bg-gray-200' : ''}`}
+            onClick={() => setCurrentPage(index + 1)}
+            className={`text-white px-3 py-1 border border-zinc-500 rounded-md ${
+              currentPage === index + 1 ? 'bg-zinc-300 dark:bg-zinc-600 text-black dark:text-white' : ''
+            }`}
           >
             {index + 1}
           </button>
-        )) }
+        ))}
 
         <button
-          onClick={() => setCurrentPage((prev) => Math.min(prev+1, totalPages))}
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={currentPage === totalPages}
-          className='p-2 border-1 border-secondary rounded-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-80'
+          className="text-white px-3 py-1 border border-zinc-500 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Next
         </button>
       </div>
     </div>
-  )
+  );
 }
 
 export default MembersPage

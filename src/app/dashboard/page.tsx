@@ -50,34 +50,44 @@ export default function DashboardPage() {
 })
 
 
-  return (
-    <div className="p-8 space-y-8">
+ return (
+    <div className="p-6 md:p-8 space-y-8 bg-white dark:bg-zinc-900 rounded-xl">
       {/* Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-4">
         {metrics.map((metric) => (
           <div
             key={metric.label}
-            className="rounded-2xl bg-white dark:bg-zinc-900 shadow-md p-4 text-center border"
+            className="rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 shadow-md px-4 py-6 text-center"
           >
-            <p className="text-sm text-gray-500 dark:text-gray-400">{metric.label}</p>
-            <p className="text-white text-2xl font-bold">{metric.value}</p>
+            <p className="text-sm opacity-80">{metric.label}</p>
+            <p className="text-2xl font-bold">{metric.value}</p>
           </div>
         ))}
       </div>
 
       {/* Line Chart */}
-      <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-md">
-        <h2 className="text-secondary text-xl font-semibold mb-4">Member Growth Over Time</h2>
+      <div className="bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 px-6 py-8 rounded-xl shadow-md">
+        <h2 className="text-xl font-semibold mb-4 text-zinc-900 dark:text-zinc-100">
+          Member Growth Over Time
+        </h2>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={growthData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Line type="monotone" dataKey="members" stroke="#8884d8" strokeWidth={2} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+            <XAxis dataKey="date" stroke="#8884d8" />
+            <YAxis stroke="#8884d8" />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: '#27272a',
+                border: '1px solid #52525b',
+                borderRadius: '0.5rem',
+                color: '#fff'
+              }}
+            />
+            <Line type="monotone" dataKey="members" stroke="#6366f1" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
       </div>
     </div>
   )
+
 }

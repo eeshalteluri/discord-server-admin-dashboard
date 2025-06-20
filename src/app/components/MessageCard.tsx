@@ -10,36 +10,36 @@ interface MessageCardProps {
 }
 
 const MessageCard: React.FC<MessageCardProps> = ({
-  avatar,
   username,
   createdAt,
   message,
 }) => {
   return (
-    <div className="border-b-1 p-4 bg-white space-y-2 shadow-md transition">
-      {/* Header */}
-      <div className="flex justify-between items-start">
-        <div className="flex items-center gap-3">
+    <div className="bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 p-4 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-700 transition-all hover:shadow-md">
+      <div className="flex justify-between items-start mb-2">
+        <div className="flex items-center gap-4">
           <Image
-            src={avatar}
+            src='/default_profile.jpg'
             alt={`${username}'s avatar`}
-            width={10}
-            height={10}
-            className="w-10 h-10 rounded-full object-cover"
+            width={40}
+            height={40}
+            className=" border border-zinc-300 rounded-full object-cover"
           />
           <div>
-            <p className="font-medium text-gray-800">{username}</p>
-            <p className="text-sm text-gray-500">{createdAt}</p>
+            <p className="font-semibold text-base">{username}</p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">{createdAt}</p>
           </div>
         </div>
 
-        <button className="text-gray-500 hover:text-red-500 transition">
+        <button
+          className="p-1 text-zinc-500 hover:text-red-500 rounded-md transition"
+          title="Delete message"
+        >
           <DeleteIcon size={18} />
         </button>
       </div>
 
-      {/* Message Content */}
-      <p className="text-gray-700 whitespace-pre-wrap">{message}</p>
+      <p className="text-sm leading-relaxed whitespace-pre-wrap">{message}</p>
     </div>
   );
 };

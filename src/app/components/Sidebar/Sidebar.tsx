@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import SidebarItem from './SidebarItem'
 import { LayoutDashboard, UsersRound, ShieldUser, MessageCircle } from 'lucide-react'
@@ -27,16 +28,16 @@ const SideBarItemsList =[
 
 const Sidebar = () => {
   return (
-    <div className='min-w-[250px] p-2 border-r-1'>
-        {SideBarItemsList.map((SideBarItem) => (
-          <SidebarItem 
-            key={SideBarItem.title} 
-            title={SideBarItem.title} 
-            href={SideBarItem.href}
-            icon={SideBarItem.icon}
-          />
-        ))}
-    </div>
+    <aside className="md:min-w-[250px] h-full p-2 bg-white dark:bg-zinc-900 border-r border-zinc-300 dark:border-zinc-700 flex flex-col gap-2 shadow-md">
+      {SideBarItemsList.map((SideBarItem) => (
+        <SidebarItem
+          key={SideBarItem.title}
+          title={SideBarItem.title}
+          href={SideBarItem.href}
+          icon={SideBarItem.icon}
+        />
+      ))}
+    </aside>
   )
 }
 
