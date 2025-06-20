@@ -6,17 +6,20 @@ import { usePathname } from 'next/navigation'
 interface SidebarItemProps {
     title: string, 
     href: string, 
-    icon: React.ElementType
+    icon: React.ElementType,
+    onlyMobile: boolean
 }
 
-const SidebarItem : React.FC<SidebarItemProps> = ({ title, href, icon: Icon }) => {
+const SidebarItem : React.FC<SidebarItemProps> = ({ title, href, icon: Icon, onlyMobile }) => {
   const pathname = usePathname()
   const isActive = pathname.startsWith(href)
+
+  const visibilityClass = onlyMobile ? 'block md:hidden' : 'md:flex'
 
   return (
     <Link
       href={href}
-      className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors text-sm font-medium
+      className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg transition-colors text-sm font-medium ${visibilityClass}
         ${
           isActive
             ? 'bg-zinc-200 dark:bg-zinc-700 text-black dark:text-white'

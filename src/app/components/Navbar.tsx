@@ -19,7 +19,7 @@ const Navbar = () => {
   const isNotificationActive = pathname === '/notifications'
 
   return (
-<div className="absolute md:relative bottom-0 left-0 z-10 w-full pt-4 p-2 md:flex md:justify-end md:items-center md:border-1 bg-zinc-900 border-b border-zinc-300 dark:border-zinc-700 text-primary">
+<div className="hidden w-full pt-4 p-2 md:flex md:justify-end md:items-center md:border-1 bg-zinc-900 border-b border-zinc-300 dark:border-zinc-700 text-primary">
         <div className='w-full md:w-fit flex justify-between md:gap-12 px-12 md:px-0 md:mr-4 gap-2'>
             <Link 
               href="/profile"

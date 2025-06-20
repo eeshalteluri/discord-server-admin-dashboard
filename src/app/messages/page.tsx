@@ -4,7 +4,7 @@ import { MessagesList } from '../constants/constants'
 
 const MessagesPage = () => {
     return (
-    <div className="p-4 space-y-4 max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-500 dark:scrollbar-thumb-zinc-700">
+    <div className="p-4 space-y-4 max-h-[90vh] scrollbar-thin scrollbar-thumb-zinc-500 dark:scrollbar-thumb-zinc-700">
       {MessagesList.length > 0 &&
         MessagesList.map((message, index) => (
           <MessageCard
