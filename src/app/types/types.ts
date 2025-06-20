@@ -7,7 +7,7 @@ export interface MemberType {
 }
 
 export interface RoleType {
-  name: 'admin' | 'moderator' | 'member',
+  name: 'owner' | 'admin' | 'moderator' | 'member',
   isActive: boolean,
   color: string
 }
